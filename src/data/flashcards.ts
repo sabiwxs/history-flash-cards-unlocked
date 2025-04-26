@@ -1,3 +1,4 @@
+
 export interface FlashCard {
   id: number;
   question: {
@@ -505,3 +506,5 @@ export const flashcards: FlashCard[] = [
       en: "It was resolved by an agreement to withdraw Soviet missiles from Cuba in exchange for a US promise not to invade Cuba and remove missiles from Turkey.",
       es: "Se resolvió mediante un acuerdo para retirar los misiles soviéticos de Cuba a cambio de una promesa de Estados Unidos de no invadir Cuba y retirar los misiles de Turquía."
     }
+  }
+];
