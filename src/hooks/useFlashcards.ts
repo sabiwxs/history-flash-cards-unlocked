@@ -1,8 +1,10 @@
 
 import { useState, useCallback } from 'react';
 import { FlashCard, flashcards as initialFlashcards } from '../data/flashcards';
+import { useLanguage } from './useLanguage';
 
 export const useFlashcards = () => {
+  const { currentLanguage } = useLanguage();
   const [flashcards, setFlashcards] = useState<FlashCard[]>([...initialFlashcards]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isShowingAnswer, setIsShowingAnswer] = useState(false);
@@ -103,8 +105,21 @@ export const useFlashcards = () => {
     return percentage;
   }, [flashcards, correctAnswers, totalCards]);
 
+  // Конвертация объектов карточки с учетом текущего языка
+  const getCurrentCard = useCallback(() => {
+    const card = flashcards[currentIndex];
+    if (!card) return null;
+
+    return {
+      ...card,
+      question: card.question[currentLanguage],
+      answer: card.answer[currentLanguage],
+      hint: card.hint[currentLanguage]
+    };
+  }, [flashcards, currentIndex, currentLanguage]);
+
   return {
-    currentCard: flashcards[currentIndex],
+    currentCard: getCurrentCard(),
     currentIndex,
     totalCards,
     isShowingAnswer,

@@ -1,8 +1,17 @@
 
 import React from 'react';
-import { FlashCard as FlashCardType } from '../data/flashcards';
 import { Lightbulb, Shield, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/useLanguage';
+
+interface FlashCardType {
+  id: number;
+  question: string;
+  answer: string;
+  hint: string;
+  answered?: boolean;
+  correct?: boolean;
+}
 
 interface FlashCardProps {
   card: FlashCardType;
@@ -14,11 +23,16 @@ interface FlashCardProps {
 
 const getCardColor = (question: string) => {
   const lowerQuestion = question.toLowerCase();
-  if (lowerQuestion.includes('война') || lowerQuestion.includes('битва')) {
+  if (lowerQuestion.includes('война') || lowerQuestion.includes('битва') || 
+      lowerQuestion.includes('war') || lowerQuestion.includes('battle') ||
+      lowerQuestion.includes('guerra') || lowerQuestion.includes('batalla')) {
     return 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200';
-  } else if (lowerQuestion.includes('революция')) {
+  } else if (lowerQuestion.includes('революция') || lowerQuestion.includes('revolution') || 
+             lowerQuestion.includes('revolución')) {
     return 'bg-gradient-to-br from-red-50 to-red-100 border-red-200';
-  } else if (lowerQuestion.includes('открытие') || lowerQuestion.includes('изобретение')) {
+  } else if (lowerQuestion.includes('открытие') || lowerQuestion.includes('изобретение') || 
+             lowerQuestion.includes('discovery') || lowerQuestion.includes('invention') ||
+             lowerQuestion.includes('descubrimiento') || lowerQuestion.includes('invención')) {
     return 'bg-gradient-to-br from-green-50 to-green-100 border-green-200';
   }
   return 'bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200';
@@ -26,9 +40,13 @@ const getCardColor = (question: string) => {
 
 const getCardIcon = (question: string) => {
   const lowerQuestion = question.toLowerCase();
-  if (lowerQuestion.includes('война') || lowerQuestion.includes('битва')) {
+  if (lowerQuestion.includes('война') || lowerQuestion.includes('битва') || 
+      lowerQuestion.includes('war') || lowerQuestion.includes('battle') ||
+      lowerQuestion.includes('guerra') || lowerQuestion.includes('batalla')) {
     return <Shield className="h-6 w-6 text-blue-600" />;
-  } else if (lowerQuestion.includes('открытие') || lowerQuestion.includes('изобретение')) {
+  } else if (lowerQuestion.includes('открытие') || lowerQuestion.includes('изобретение') || 
+             lowerQuestion.includes('discovery') || lowerQuestion.includes('invention') ||
+             lowerQuestion.includes('descubrimiento') || lowerQuestion.includes('invención')) {
     return <Star className="h-6 w-6 text-green-600" />;
   }
   return null;
@@ -43,6 +61,26 @@ const FlashCard: React.FC<FlashCardProps> = ({
 }) => {
   const cardColor = getCardColor(card.question);
   const cardIcon = getCardIcon(card.question);
+  const { currentLanguage } = useLanguage();
+  
+  // Текст для кнопки подсказки и переворота в зависимости от языка
+  const hintText = {
+    'ru': 'Подсказка',
+    'en': 'Get a hint',
+    'es': 'Obtener pista'
+  };
+  
+  const flipText = {
+    'ru': 'Нажмите, чтобы увидеть ответ',
+    'en': 'Click to see answer',
+    'es': 'Haga clic para ver la respuesta'
+  };
+  
+  const backText = {
+    'ru': 'Нажмите, чтобы вернуться к вопросу',
+    'en': 'Click to return to question',
+    'es': 'Haga clic para volver a la pregunta'
+  };
 
   return (
     <div className="relative w-full max-w-lg h-[400px] perspective-1000 cursor-pointer">
@@ -66,7 +104,7 @@ const FlashCard: React.FC<FlashCardProps> = ({
             }}
           >
             <Lightbulb size={16} />
-            Get a hint
+            {hintText[currentLanguage]}
           </button>
 
           {cardIcon && (
@@ -85,7 +123,7 @@ const FlashCard: React.FC<FlashCardProps> = ({
             )}
 
             <div className="absolute bottom-4 text-center w-full text-sm text-gray-500">
-              Нажмите, чтобы увидеть ответ
+              {flipText[currentLanguage]}
             </div>
           </div>
         </div>
@@ -100,7 +138,7 @@ const FlashCard: React.FC<FlashCardProps> = ({
             <p className="text-gray-700 text-center font-playfair">{card.answer}</p>
             
             <div className="absolute bottom-4 text-center w-full text-sm text-gray-500">
-              Нажмите, чтобы вернуться к вопросу
+              {backText[currentLanguage]}
             </div>
           </div>
         </div>
